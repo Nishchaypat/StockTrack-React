@@ -1,0 +1,30 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6"/>
+      <stop offset="100%" style="stop-color:#8B5CF6"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Main circle background -->
+  <circle cx="20" cy="20" r="18" fill="url(#gradient)" opacity="0.1"/>
+  
+  <!-- Stock chart lines -->
+  <path 
+    d="M8 28L14 22L20 26L26 16L32 12" 
+    stroke="url(#gradient)"
+    stroke-width="3"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    fill="none">
+    <!-- Optional animation -->
+    <animate 
+      attributeName="d" 
+      dur="3s"
+      repeatCount="indefinite"
+      values="M8 28L14 22L20 26L26 16L32 12;
+              M8 24L14 26L20 20L26 22L32 16;
+              M8 28L14 22L20 26L26 16L32 12"/>
+  </path>
+</svg>
