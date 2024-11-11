@@ -73,7 +73,12 @@ const Watchlist = () => {
     try {
       setPortfolio(portfolio.filter(company => company.symbol !== symbol)); // Optimistic UI update
   
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000'; 
+      const apiUrl = process.env.REACT_APP_API_URL 
+      ? process.env.REACT_APP_API_URL 
+      : (window.location.origin.includes('localhost') 
+          ? 'http://localhost:8000' 
+          : 'https://stocktrack-react.onrender.com');
+
       await axios.delete(
         `${apiUrl}/api/portfolio/remove/`,
         {

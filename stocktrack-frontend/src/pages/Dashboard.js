@@ -55,7 +55,12 @@ const Dashboard = () => {
       setCompanies(companies.filter(company => company.symbol !== symbol));
 
       // Make API call to actually add to portfolio
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const apiUrl = process.env.REACT_APP_API_URL 
+      ? process.env.REACT_APP_API_URL 
+      : (window.location.origin.includes('localhost') 
+          ? 'http://localhost:8000' 
+          : 'https://stocktrack-react.onrender.com');
+
       const response = await axios.post(
         `${apiUrl}/api/portfolio/add/`,
         { symbol },

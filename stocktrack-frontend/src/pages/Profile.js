@@ -62,7 +62,12 @@ const Profile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+      const apiUrl = process.env.REACT_APP_API_URL 
+      ? process.env.REACT_APP_API_URL 
+      : (window.location.origin.includes('localhost') 
+          ? 'http://localhost:8000' 
+          : 'https://stocktrack-react.onrender.com');
+
       const response = await axios.put(`${apiUrl}/api/user/${userId}/update/`, formData, {
         headers: {
           'Authorization': `Token ${auth.token}`
