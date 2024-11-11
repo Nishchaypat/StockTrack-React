@@ -11,12 +11,12 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { isDark } = useTheme(); // Access the theme context
-
   const handleLogin = async () => {
     setLoading(true);
     setLoginError('');
     try {
-      const response = await axios.post('http://localhost:8000/api/login/', { email, password });
+      const response = await axios.post((window.location.origin.includes('localhost') ? 'http://localhost:8000/api/login/' : 'https://stocktrack-react.onrender.com/api/login/'),
+      { email, password });
       if (response.data.token && response.data.token !== "") {
         localStorage.setItem('authToken', response.data.token);
         localStorage.setItem('user_id', response.data.user_id);
