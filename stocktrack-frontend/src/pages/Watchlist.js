@@ -24,7 +24,12 @@ const Watchlist = () => {
   const fetchWatchlistData = async () => {
     try {
       setLoading(true);
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000' || 'https://stocktrack-react.onrender.com';
+      const apiUrl = process.env.REACT_APP_API_URL 
+      ? process.env.REACT_APP_API_URL 
+      : (window.location.origin.includes('localhost') 
+          ? 'http://localhost:8000' 
+          : 'https://stocktrack-react.onrender.com');
+
       const response = await axios.get(`${apiUrl}/api/watchlist/${userId}/`, {
         headers: {
           Authorization: `Token ${auth.token}`,
