@@ -15,7 +15,7 @@ function Register() {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://localhost:8000/api/register/', {
+      const response = await axios.post((window.location.origin.includes('localhost') ? 'http://localhost:8000/api/register/' : 'https://stocktrack-react.onrender.com/api/register/'), {
         email,
         password,
         firstname,

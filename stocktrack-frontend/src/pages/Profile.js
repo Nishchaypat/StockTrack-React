@@ -80,7 +80,7 @@ const Profile = () => {
     e.preventDefault();
     if (formData.newPassword === formData.confirmPassword) {
       try {
-        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+        const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000' || 'https://stocktrack-react.onrender.com';
         const response = await axios.put(`${apiUrl}/api/user/${userId}/update/`, formData, {
           headers: {
             'Authorization': `Token ${auth.token}`
