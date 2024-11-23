@@ -1,303 +1,341 @@
-# core/views.py
-
-from django.contrib.auth import authenticate, login
+from .serializer import CompanyDetailsSerializer
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import User, Company, Portfolio, StockPrice, NewsArticle, FinancialMetric
-from .serializer import PortfolioSerializer, UserSerializer, CompanySerializer, ChangePasswordSerializer
-import json
-from django.contrib.auth.models import User
-from django.contrib.auth.hashers import make_password, check_password
-from rest_framework.authtoken.models import Token
+import mysql.connector
+import bcrypt
 
+# Database connector class
+class SQLConnector:
+    def __init__(self):
+        try:
+            self.conn = mysql.connector.connect(
+                host="database-1.cds0coo26frf.us-east-1.rds.amazonaws.com",
+                user="adminstocktrack",
+                password="Nrp212300",
+                port=3306,
+                database="stocktrack"
+            )
+            self.mycursor = self.conn.cursor()
+        except Exception as e:
+            print("Some error occurred:", e)
 
-@csrf_exempt
+    def register(self, firstname, lastname, email, password):
+        # Hash the password before storing it
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        
+        try:
+            # Insert user details into the users table, including the hashed password
+            self.mycursor.execute(""" 
+                INSERT INTO users (firstname, lastname, email, password) 
+                VALUES (%s, %s, %s, %s);
+            """, (firstname, lastname, email, hashed_password))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+
+    def login(self, email, password):
+        try:
+            # Fetch the user data based on the email
+            self.mycursor.execute(""" 
+                SELECT * FROM users WHERE email = %s;
+            """, (email,))
+            data = self.mycursor.fetchone()
+            if data:
+                # The password is stored at index 4 (based on the query result structure)
+                stored_hashed_password = data[4]  # Assuming password is in the 5th column (index 4)
+
+                # Compare the entered password (hashed) with the stored password
+                if bcrypt.checkpw(password.encode('utf-8'), stored_hashed_password.encode('utf-8')):
+                    return data  # Return user data if login is successful
+                else:
+                    return False  # Incorrect password
+            else:
+                return False  # No user found with that email
+
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+
+    def get_companies(self):
+        try:
+            self.mycursor.execute("SELECT * FROM companies")
+            return self.mycursor.fetchall()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def get_user_portfolio(self, user_id):
+        try:
+            self.mycursor.execute(""" 
+                SELECT * FROM portfolio 
+                WHERE user_id = %s;
+            """, (user_id,))
+            return self.mycursor.fetchall()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def add_to_portfolio(self, user_id, symbol):
+        try:
+            self.mycursor.execute(""" 
+                INSERT INTO portfolio (user_id, symbol) 
+                VALUES (%s, %s);
+            """, (user_id, symbol))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+
+    def remove_from_portfolio(self, user_id, symbol):
+        try:
+            self.mycursor.execute(""" 
+                DELETE FROM portfolio 
+                WHERE user_id = %s AND symbol = %s;
+            """, (user_id, symbol))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+
+    def get_company_details(self, ticker):
+        try:
+            self.mycursor.execute(""" 
+                SELECT * FROM companies WHERE symbol = %s;
+            """, (ticker,))
+            return self.mycursor.fetchone()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def get_company_stock_prices(self, symbol):
+        try:
+            self.mycursor.execute(""" 
+                SELECT * FROM stock_prices WHERE symbol = %s ORDER BY date DESC LIMIT 5;
+            """, (symbol,))
+            return self.mycursor.fetchall()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def get_company_financials(self, symbol):
+        try:
+            self.mycursor.execute(""" 
+                SELECT * FROM financial_metrics WHERE symbol = %s ORDER BY quarter DESC LIMIT 4;
+            """, (symbol,))
+            return self.mycursor.fetchall()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def get_company_news(self, symbol):
+        try:
+            self.mycursor.execute(""" 
+                SELECT * FROM news_articles WHERE symbol = %s ORDER BY published_date DESC LIMIT 5;
+            """, (symbol,))
+            return self.mycursor.fetchall()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def get_user_profile(self, user_id):
+        try:
+            self.mycursor.execute(""" 
+                SELECT firstname, lastname, email FROM users WHERE user_id = %s;
+            """, (user_id,))
+            return self.mycursor.fetchone()
+        except Exception as e:
+            print(f"Error: {e}")
+            return None
+
+    def update_user_profile(self, user_id, firstname, lastname, email):
+        try:
+            self.mycursor.execute(""" 
+                UPDATE users SET firstname = %s, lastname = %s, email = %s WHERE user_id = %s;
+            """, (firstname, lastname, email, user_id))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+
+    def update_user_password(self, email, new_password):
+        try:
+            # Hash the new password using bcrypt
+            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+            # Update the password in the database
+            self.mycursor.execute(""" 
+                UPDATE users SET password = %s WHERE email = %s;
+            """, (hashed_password, email))
+            self.conn.commit()
+
+            return True
+        except Exception as e:
+            print(f"Error: {e}")
+            return False
+
+# API Views
 @api_view(['POST'])
 def register_user(request):
     data = request.data
-    user = User.objects.create_user(
-        username=data['email'],  # Using email as the username
-        first_name=data['firstname'],
-        last_name=data['lastname'],
-        email=data['email'],
-        password=data['password']
-    )
-    return Response({'message': 'Registration successful'})
+    db = SQLConnector()
+    if db.register(data['firstname'], data['lastname'], data['email'], data['password']):
+        return Response({'message': 'Registration successful'})
+    else:
+        return Response({'error': 'Registration failed'}, status=400)
 
-
-@csrf_exempt
 @api_view(['POST'])
 def login_user(request):
     data = request.data
-    try:
-        # Retrieve the user by email
-        user = User.objects.get(email=data['email'])
-        # Check if the provided password matches the stored hash
-        if check_password(data['password'], user.password):
-            # Authenticate the user and log them in
-            login(request, user)
-            token, created = Token.objects.get_or_create(user=user)
-            # Include user_id in the response
-            print("Login:",user)
-            return Response({'message': 'Login successful', 'token': token.key, 'user_id': user.id})
-        else:
-            return Response({'error': 'Invalid credentials'}, status=400)
-    except User.DoesNotExist:
-        return Response({'error': 'User not found'}, status=404)
-
+    db = SQLConnector()
+    user_data = db.login(data['email'], data['password'])
+    if user_data:
+        user_id = user_data[0]  # Assuming the user ID is the first item in the fetched row
+        return Response({'message': 'Login successful', 'user_id': user_id})
+    else:
+        return Response({'error': 'Invalid credentials'}, status=400)
 
 @api_view(['GET'])
 def view_dashboard(request, user_id):
-    print(f"Authenticated user dashboard: {request.user}, {request.user.id}, {int(user_id)}") 
+    db = SQLConnector()
+    companies = db.get_companies()
+    if companies is None:
+        return Response({"error": "Failed to fetch companies"}, status=500)
 
-    if not request.user.is_authenticated:
-        return Response({"error": "User not authenticated"}, status=401)
+    portfolio = db.get_user_portfolio(user_id)
+    if portfolio is None:
+        return Response({"error": "Failed to fetch portfolio"}, status=500)
 
-    if request.user.id != int(user_id):
-        return Response({"error": "Unauthorized access"}, status=403)
+    portfolio_companies = []
+    for item in portfolio:
+        company = db.get_company_details(item[1])  # Assuming item[1] is the symbol
+        if company:
+            portfolio_companies.append(company)
 
-    if not user_id:
-        return Response({"error": "User ID is required"}, status=400)
-
-    companies = Company.objects.all()  
-    company_data = CompanySerializer(companies, many=True).data
-    
-    portfolio = Portfolio.objects.filter(user=user_id) 
-
-    portfolio_companies = Company.objects.filter(symbol__in=[item.company_symbol for item in portfolio])
-    
     response_data = {
-        'companies': company_data,
-        'portfolio': CompanySerializer(portfolio_companies, many=True).data 
+        'companies': companies,
+        'portfolio': portfolio_companies
     }
-    #print(response_data['portfolio'])
     return Response(response_data)
-
-
 
 @api_view(['GET'])
 def view_portfolio(request, user_id):
-    print(f"Authenticated user portfolio: {request.user}, {request.user.id}, {user_id}")  # Debugging output
-
-    if not request.user.is_authenticated:
-        return Response({"error": "User not authenticated"}, status=401)
-
-    if request.user.id != int(user_id):
-        return Response({"error": "Unauthorized access"}, status=403)
-
-    if not user_id:
-        return Response({"error": "User ID is required"}, status=400)
-
-
-    portfolio = Portfolio.objects.filter(user=user_id)
-    portfolio_companies = Company.objects.filter(symbol__in=[item.company_symbol for item in portfolio])
-
-    if not portfolio.exists():
+    db = SQLConnector()
+    portfolio = db.get_user_portfolio(user_id)  # Assuming a method exists for this query
+    if not portfolio:
         return Response({"error": "Portfolio not found"}, status=404)
 
-    # Serialize the portfolio data
-    portfolio_data = {'portfolio': CompanySerializer(portfolio_companies, many=True).data }
-    #print(portfolio_data)
+    portfolio_companies = db.get_companies_by_symbols([item['symbol'] for item in portfolio])
+    portfolio_data = {'portfolio': portfolio_companies}
+
     return Response(portfolio_data)
-
-
 
 @api_view(['POST'])
 def add_to_portfolio(request):
-    print('here')
-    # Ensure the user is authenticated
-    if not request.user.is_authenticated:
-        return Response({'message': 'User not authenticated'}, status=401)
-
-    # Get the authenticated user ID
-    user_id = request.user.id
-    print(user_id)
-    # Ensure the symbol is provided
+    user_id = request.data.get('user_id')
     symbol = request.data.get('symbol')
     if not symbol:
         return Response({'message': 'Symbol is required'}, status=400)
 
-    # Try to get the company based on the symbol
-    try:
-        company = Company.objects.get(symbol=symbol)
-        print(company)
-    except Company.DoesNotExist:
+    db = SQLConnector()
+    company = db.get_company_details(symbol)
+    if not company:
         return Response({'message': 'Company not found'}, status=404)
 
-    # Check if the company is already in the portfolio for the current user
-    if Portfolio.objects.filter(user=user_id, company_symbol=symbol).exists():
-        return Response({'message': 'Company is already in your portfolio'}, status=400)
-
-    # Create a new portfolio entry for the user and company symbol
-    Portfolio.objects.create(user=user_id, company_symbol=symbol)
-    portfolios = Portfolio.objects.all()
-    for portfolio in portfolios:
-        print(portfolio)
-    return Response({'message': 'Company added to portfolio'})
-
-
-
+    if db.add_to_portfolio(user_id, symbol):
+        return Response({'message': 'Company added to portfolio'})
+    else:
+        return Response({'message': 'Failed to add company to portfolio'}, status=400)
 
 @api_view(['DELETE'])
 def remove_from_portfolio(request):
-    if not request.user.is_authenticated:
-        return Response({"detail": "Authentication credentials were not provided."}, status=401)
-
-    user = request.user.id
+    user_id = request.data.get('user_id')
     symbol = request.data.get('symbol')
-    print(user, symbol)
     
     if not symbol:
         return Response({"detail": "No symbol provided."}, status=400)
 
-    try:
-        # Remove the company from the user's portfolio using symbol
-        portfolio_item = Portfolio.objects.get(user=user, company_symbol=symbol)
-        portfolio_item.delete()
-
+    db = SQLConnector()
+    if db.remove_from_portfolio(user_id, symbol):
         return Response({"detail": "Company removed from portfolio successfully."}, status=200)
-    except Portfolio.DoesNotExist:
+    else:
         return Response({"detail": "Company not found in portfolio."}, status=404)
-    except Exception as e:
-        print(e)
-        return Response({"detail": str(e)}, status=400)
 
 @api_view(['GET'])
 def company_list(request):
-    companies = Company.objects.all().values('name', 'symbol')
-    return JsonResponse({'companies': list(companies)})
-
+    db = SQLConnector()
+    companies = db.get_companies()
+    if companies:
+        return JsonResponse({'companies': companies})
+    return JsonResponse({'error': 'Failed to fetch companies'}, status=500)
 
 @api_view(['GET'])
 def company_details(request, ticker):
-    try:
-        # Fetch company details using the ticker
-        company = Company.objects.get(symbol=ticker)
-        
-        # Get stock prices for the company (latest 5 records)
-        stock_prices = StockPrice.objects.filter(company=company).order_by('-date')[:5]
-        stock_prices_data = [
-            {
-                'date': stock.date,
-                'open': stock.open_price,
-                'high': stock.high,
-                'low': stock.low,
-                'close': stock.close,
-                'volume': stock.volume
-            }
-            for stock in stock_prices
-        ]
+    db = SQLConnector()
+    company = db.get_company_details(ticker)
 
-        # Get financial metrics for the company (latest 4 quarters)
-        financial_metrics = FinancialMetric.objects.filter(company=company).order_by('-quarter')[:4]
-        financial_metrics_data = [
-            {
-                'quarter': fm.quarter,
-                'revenue': fm.revenue,
-                'earnings': fm.earnings,
-                'dividends': fm.dividends,
-                'pe_ratio': fm.pe_ratio,  # P/E ratio
-                'eps': fm.eps,            # Earnings Per Share
-                'market_cap': fm.market_cap,  # Market capitalization
-                'beta': fm.beta           # Beta value (volatility)
-            }
-            for fm in financial_metrics
-        ]
+    if company:
+        # Assuming company is returned as a dictionary or model instance
+        stock_prices = db.get_company_stock_prices(ticker)
+        financials = db.get_company_financials(ticker)
+        news = db.get_company_news(ticker)
 
-        # Get news articles for the company (latest 5 articles)
-        news_articles = NewsArticle.objects.filter(company=company).order_by('-published_date')[:5]
-        news_articles_data = [
-            {
-                'title': article.title,
-                'content': article.content,
-                'published_date': article.published_date.strftime('%Y-%m-%d %H:%M:%S')
-            }
-            for article in news_articles
-        ]
-
-        # Prepare the data to return
+        # Prepare the company data as a dictionary for the serializer
         company_data = {
-            'name': company.name,
-            'symbol': company.symbol,
-            'sector': company.sector,
-            'industry': company.industry,
-            'description': company.description,
-            'stock_prices': stock_prices_data,
-            'financial_metrics': financial_metrics_data,
-            'news_articles': news_articles_data
+            'company': company,
+            'stock_prices': stock_prices,
+            'financials': financials,
+            'news_articles': news
         }
-        return JsonResponse(company_data)
 
-    except Company.DoesNotExist:
-        return JsonResponse({'error': 'Company not found'}, status=404)
+        # Use the serializer to serialize the data
+        serializer = CompanyDetailsSerializer(company_data)
+        print(serializer.data)
+
+        # Return the serialized data as JSON
+        return Response(serializer.data)
+
+    return Response({'error': 'Company not found'}, status=404)
+
+
+
 
 @api_view(['GET'])
 def get_user_profile(request, user_id):
-    print(request)
+    db = SQLConnector()
+    user = db.get_user_profile(user_id)
+    if user:
+        return Response(user)
+    return Response({"detail": "User not found"}, status=404)
+
+
+@api_view(['POST'])
+def update_user_profile(request):
+    user_id = request.data.get('user_id')
+    firstname = request.data.get('firstname')
+    lastname = request.data.get('lastname')
+    email = request.data.get('email')
+
+    db = SQLConnector()
+    if db.update_user_profile(user_id, firstname, lastname, email):
+        return Response({'message': 'Profile updated successfully'})
+    return Response({'error': 'Failed to update profile'}, status=400)
+
+def update_user_password(self, email, new_password):
     try:
-        user = User.objects.get(id=user_id)
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-    except User.DoesNotExist:
-        return Response({"detail": "User not found"}, status=404)
+        # Hash the new password using bcrypt
+        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
 
+        # Update the password in the database
+        self.mycursor.execute("UPDATE users SET password = %s WHERE email = %s", (hashed_password, email))
+        self.conn.commit()
 
-
-@api_view(['PUT'])
-def update_user_profile(request, user_id):
-    print(request.data)
-    try:
-        user = User.objects.get(id=user_id)
-
-        if user != request.user:
-            return Response({"detail": "Permission denied"}, status=403)
-        if request.data:
-            user.first_name = request.data['firstName']
-            user.last_name = request.data['lastName']
-            user.email = request.data['email']
-        if request.data['currentPassword'] and request.data['newPassword']:
-            change_user_password(request)
-
-        user.save()
-
-        user_serializer = UserSerializer(user)
-
-        return Response(user_serializer.data, status=200)
-
-    except User.DoesNotExist:
-        return Response({"detail": "User not found"}, status=404)
-
-
-
-@api_view(['DELETE'])
-def delete_user(request, user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        if user != request.user:
-            return Response({"detail": "You do not have permission to delete this user."}, status=403)
-        
-        user.delete()
-        return Response({"detail": "User deleted successfully."}, status=204)
-    except User.DoesNotExist:
-        return Response({"detail": "User not found."}, status=404)
-    
-
-
-def change_user_password(request):
-    curr_pass = request.data['currentPassword']
-    try:
-        user = User.objects.get(email=request.data['email'])
-        print(f"Found user: {user.email}")
-        if check_password(curr_pass, user.password):
-            user.password = make_password(request.data['newPassword'])
-            print("Password updated")
-            user.save()
-            print("Saved to database")
-            return True
-        else:
-            print("Current password check failed")
-    except User.DoesNotExist:
-        print("User not found")
+        return True
+    except Exception as e:
+        print(f"Error: {e}")
         return False

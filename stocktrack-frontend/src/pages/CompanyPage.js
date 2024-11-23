@@ -28,7 +28,9 @@ const CompanyPage = () => {
           Authorization: auth.token ? `Token ${auth.token}` : '',
         },
       });
+      
       return response.data;
+      
     } catch (error) {
       throw new Error(error.message);
     }

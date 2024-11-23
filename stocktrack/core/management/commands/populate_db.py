@@ -177,3 +177,4 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.ERROR(f"Error processing {ticker}: {str(e)}"))
 
         self.stdout.write(self.style.SUCCESS('Database populated successfully!'))
+

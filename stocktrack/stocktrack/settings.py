@@ -32,15 +32,11 @@ ALLOWED_HOSTS = [
 ]
 
 
-# Application definition
-
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.auth',  # Add this line
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
+    'django.contrib.sessions',  # Uncomment if needed
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
@@ -48,12 +44,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
-    'rest_framework.authtoken',
-
+    
     # Your app
     'core',
-    'stocktrack'
+    'stocktrack',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -74,9 +70,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
     ],
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # Optional, if you want session auth too
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',  # Using session authentication
+        # 'rest_framework.authentication.TokenAuthentication',  # Removed TokenAuthentication
     ],
 }
 
@@ -84,7 +80,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000","https://aistockvision.netlify.app/"
+    "http://localhost:3000", "https://aistockvision.netlify.app"
 ]
 
 
@@ -110,21 +106,24 @@ WSGI_APPLICATION = 'stocktrack.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Use SQLite
-        'NAME': BASE_DIR / 'db.sqlite3',  # SQLite database file
-    }
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'stocktrack',
+        'USER': 'adminstocktrack',
+        'PASSWORD': 'Nrp212300',
+        'HOST': 'database-1.cds0coo26frf.us-east-1.rds.amazonaws.com',
+        'PORT': '3306',
+        'OPTIONS': {
+            'ssl': {
+                'ca': r"C:\Users\Nishc\Downloads\us-east-1-bundle.pem",  # Ensure the path to your SSL certificate is correct
+            },
+        },
+    },
 }
 
 
-
-
 # Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -142,8 +141,6 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -154,11 +151,7 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = 'static/'
 
 # Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

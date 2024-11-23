@@ -13,7 +13,8 @@ urlpatterns = [
     path('portfolio/remove/', views.remove_from_portfolio),
     path('user/<user_id>/', views.get_user_profile, name='get_user_profile'),
     path('user/<user_id>/update/', views.update_user_profile, name='update_user_profile'),
-    path('change_password/', views.change_user_password, name='change_user_password'),
+    path('change_password/', views.update_user_password, name='change_user_password'),
     path('companies/', views.company_list, name='company_list'),
 
 ]
+
