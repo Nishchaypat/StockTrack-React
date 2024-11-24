@@ -46,7 +46,7 @@ function Login() {
     <>
       <style>{pulseKeyframes}</style>
       <Navbar />
-      <div className={`relative min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white-900'} flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8`}>
+      <div className={`relative min-h-screen ${isDark ? 'bg-gray-900' : 'bg-white !important'} flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8`}>
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute inset-0 opacity-10">
             {[...Array(5)].map((_, i) => (
