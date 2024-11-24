@@ -89,13 +89,13 @@ const Home = () => {
                 icon: 'fas fa-chart-line',
                 title: 'Advanced Technical Analysis',
                 description: 'Use detailed candlestick charting and real-time data to analyze stock movements and trends.',
-                color: 'blue'
+                color: 'green'
               },
               {
                 icon: 'fas fa-newspaper',
                 title: 'Market News with Sentiment Scoring',
                 description: 'Get real-time news with sentiment analysis to gauge market sentiment and influence your trading strategy.',
-                color: 'purple'
+                color: 'green'
               }
             ].map((feature, index) => (
               <div
