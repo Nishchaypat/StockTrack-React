@@ -11,7 +11,7 @@ import json
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password, check_password
 from rest_framework.authtoken.models import Token
-
+import mysql.connector
 
 @csrf_exempt
 @api_view(['POST'])
@@ -169,6 +169,48 @@ def company_list(request):
     companies = Company.objects.all().values('name', 'symbol')
     return JsonResponse({'companies': list(companies)})
 
+def get_predictions(company_id):
+    # Connect to MySQL database on AWS
+    conn = mysql.connector.connect(
+        host="database-1.cds0coo26frf.us-east-1.rds.amazonaws.com",
+        user="adminstocktrack",
+        password="Nrp212300",
+        port=3306,
+        database="stocktrack"
+    )
+
+    # Create a cursor
+    mycursor = conn.cursor()
+    print(mycursor)
+    try:
+        # Query the database to fetch the last 20 predictions for the company
+        query = """
+        SELECT date, actual, predicted
+        FROM Prediction
+        WHERE symbol = %s
+        ORDER BY date DESC
+        LIMIT 20
+        """
+        mycursor.execute(query, (company_id,))
+        predictions = mycursor.fetchall()
+
+        # Return the predictions data in the required format
+        return [
+            {
+                'date': pred[0],
+                'actual': pred[1],
+                'predicted': pred[2]
+            }
+            for pred in predictions
+        ]
+
+    except mysql.connector.Error as err:
+        print(err)
+        raise Exception(f"Error fetching predictions: {str(err)}")
+
+    finally:
+        mycursor.close()
+        conn.close()
 
 @api_view(['GET'])
 def company_details(request, ticker):
@@ -216,7 +258,11 @@ def company_details(request, ticker):
             }
             for article in news_articles
         ]
+        print(stock_prices_data)
 
+        # Fetch prediction data using the get_predictions function
+        prediction_data = get_predictions(ticker)
+        print(prediction_data)
         # Prepare the data to return
         company_data = {
             'name': company.name,
@@ -226,12 +272,16 @@ def company_details(request, ticker):
             'description': company.description,
             'stock_prices': stock_prices_data,
             'financial_metrics': financial_metrics_data,
-            'news_articles': news_articles_data
+            'news_articles': news_articles_data,
+            'predictions': prediction_data  # Include predictions here
         }
         return JsonResponse(company_data)
 
     except Company.DoesNotExist:
         return JsonResponse({'error': 'Company not found'}, status=404)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @api_view(['GET'])
 def get_user_profile(request, user_id):
@@ -274,6 +324,7 @@ def update_user_profile(request, user_id):
 @api_view(['DELETE'])
 def delete_user(request, user_id):
     try:
+        print('here')
         user = User.objects.get(id=user_id)
         if user != request.user:
             return Response({"detail": "You do not have permission to delete this user."}, status=403)

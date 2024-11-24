@@ -111,6 +111,32 @@ const Profile = () => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const confirmDelete = window.confirm(
+      'Are you sure you want to delete your account? This action cannot be undone.'
+    );
+    if (!confirmDelete) return;
+
+    const apiUrl = process.env.REACT_APP_API_URL
+      ? process.env.REACT_APP_API_URL
+      : window.location.origin.includes('localhost')
+      ? 'http://localhost:8000'
+      : 'https://stocktrack-react.onrender.com';
+
+    try {
+      const response = await axios.delete(`${apiUrl}/api/user/${userId}/delete/`, {
+        headers: { Authorization: `Token ${auth.token}` },
+      });
+      if (response.status === 204) {
+        alert('Account deleted successfully. Redirecting to login.');
+        window.location.href = '/login';
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('Failed to delete account. Please try again.');
+    }
+  };
+
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
@@ -277,7 +303,10 @@ const Profile = () => {
         <div className="bg-gray-800 rounded-xl p-6">
           <h2 className="text-xl font-semibold text-white mb-6">Danger Zone</h2>
           <div className="space-y-4">
-            <button className="w-full bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 transition-colors">
+            <button
+              onClick={handleDeleteAccount}
+              className="w-full bg-red-500 text-white rounded-lg px-4 py-2 hover:bg-red-600 transition-colors"
+            >
               Delete Account
             </button>
           </div>
