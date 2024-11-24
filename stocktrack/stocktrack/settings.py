@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-7z9n$b+do=e0$lyx=gd+$u54kpzhrdnnx*1ij43q(q_sbb-jvg'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'stocktrack-react.onrender.com',  # Replace with your actual backend domain if available
@@ -84,7 +84,7 @@ REST_FRAMEWORK = {
 CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000","https://aistockvision.netlify.app"
+    "http://localhost:3000","https://aistockvision.netlify.app/"
 ]
 
 
