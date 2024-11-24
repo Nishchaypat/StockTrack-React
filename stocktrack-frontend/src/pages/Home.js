@@ -141,10 +141,10 @@ const Home = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">Connect</h4>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white">
+                <a href="https://www.linkedin.com/in/nishchay-pat/" className="text-gray-400 hover:text-white">
                   <i className="fab fa-linkedin"></i>
                 </a>
-                <a href="#" className="text-gray-400 hover:text-white">
+                <a href="https://github.com/Nishchaypat" className="text-gray-400 hover:text-white">
                   <i className="fab fa-github"></i>
                 </a>
               </div>
