@@ -10,32 +10,32 @@ const Features = () => {
     {
       icon: 'fa-chart-line',
       title: 'AI-Powered Price Prediction',
-      description: 'Advanced XGBoost model with 93% accuracy for stock price predictions, helping you make data-driven investment decisions.',
+      description: 'Utilizing advanced XGBoost model trained on stock price data with 93% accuracy for precise predictions, helping users make data-driven investment decisions. The model incorporates key financial indicators, technical analysis features, and market trends.',
     },
     {
       icon: 'fa-newspaper',
       title: 'Sentiment Analysis',
-      description: 'Real-time news sentiment analysis from major sources like Bloomberg, CNBC, and Wall Street Journal.',
+      description: 'Real-time sentiment analysis of financial news, including sources like Bloomberg, CNBC, and Wall Street Journal. Leveraging natural language processing to track market sentiment and provide actionable insights for investment decisions.',
     },
     {
       icon: 'fa-database',
       title: 'Robust Database Management',
-      description: 'Advanced DBMS architecture ensuring efficient data handling and real-time updates of financial information.',
+      description: 'Leveraging AWS RDS for efficient data storage and management, with real-time updates to stock prices, financial metrics, and news articles. The system ensures high availability and scalability for growing data needs.',
     },
     {
       icon: 'fa-magnifying-glass-chart',
-      title: 'Financial Metrics',
-      description: 'Comprehensive financial metrics and indicators for thorough market analysis.',
+      title: 'Comprehensive Financial Metrics',
+      description: 'Detailed financial metrics including P/E ratio, RSI, MACD, OBV, and more, for thorough market analysis. Integrated with historical stock data to offer predictive insights and enable well-informed decision-making.',
     },
     {
       icon: 'fa-user-shield',
       title: 'Personalized Dashboard',
-      description: 'Customizable dashboard to track your favorite stocks and receive personalized insights.',
+      description: 'Customizable dashboard to track portfolio performance, monitor favorite stocks, and receive personalized insights. Leverages machine learning to suggest optimal trading strategies based on user preferences and market conditions.',
     },
     {
       icon: 'fa-clock',
       title: 'Real-Time Updates',
-      description: 'Live stock price updates and immediate access to market-moving news.',
+      description: 'Access to live stock price updates, real-time market news, and alerts on market-moving events. The system integrates with financial APIs and updates seamlessly, ensuring users stay informed.',
     }
   ];
 
@@ -73,7 +73,7 @@ const Features = () => {
                 <span className="text-green-500"> Smart Trading</span>
               </h1>
               <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-700'} max-w-3xl mx-auto`}>
-                Powered by XGBoost prediction model with 93% accuracy and comprehensive DBMS architecture.
+                Powered by a cutting-edge XGBoost prediction model with 93% accuracy, robust DBMS architecture, and machine learning-driven market insights.
               </p>
             </div>
           </div>
@@ -118,7 +118,7 @@ const Features = () => {
                 Technical Excellence
               </h2>
               <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-700'} max-w-2xl mx-auto`}>
-                Built with advanced technologies and robust architecture
+                Built with cutting-edge technologies, including machine learning, AWS, and real-time data processing.
               </p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -128,7 +128,13 @@ const Features = () => {
               >
                 <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-black'} mb-4`}>Machine Learning Model</h3>
                 <ul className={`space-y-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  {['XGBoost algorithm for price prediction', '93% prediction accuracy', 'Real-time data processing', 'Advanced feature engineering'].map((item, index) => (
+                  {[
+                    'XGBoost algorithm for stock price prediction',
+                    '93% accuracy in stock price prediction',
+                    'Trained with historical OHLCV data and technical indicators',
+                    'Real-time data processing and model updates',
+                    'Advanced feature engineering for improved model performance'
+                  ].map((item, index) => (
                     <li key={index} className="flex items-center">
                       <i className="fas fa-check text-green-500 mr-2"></i>
                       {item}
@@ -142,7 +148,12 @@ const Features = () => {
               >
                 <h3 className={`text-xl font-semibold ${isDark ? 'text-white' : 'text-black'} mb-4`}>Database Architecture</h3>
                 <ul className={`space-y-3 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                  {['Robust DBMS implementation', 'Real-time data synchronization', 'Efficient query optimization', 'Scalable infrastructure'].map((item, index) => (
+                  {[
+                    'AWS RDS for robust, scalable database management',
+                    'Real-time synchronization of stock prices, news, and metrics',
+                    'Optimized query processing for high performance',
+                    'Scalable infrastructure to handle large volumes of financial data'
+                  ].map((item, index) => (
                     <li key={index} className="flex items-center">
                       <i className="fas fa-check text-green-500 mr-2"></i>
                       {item}

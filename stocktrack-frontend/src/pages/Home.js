@@ -23,7 +23,6 @@ const Home = () => {
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
           <div className={`absolute inset-0 bg-gradient-to-r ${themeClasses.accent}`}></div>
-          {/* Add animated stock chart lines */}
           <div className="absolute inset-0 opacity-10">
             {[...Array(5)].map((_, i) => (
               <div
@@ -45,7 +44,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
               <div className="flex justify-center items-center mb-6 space-x-2">
-                <i className="fas fa-chart-line text-green-500 text-4xl"></i>
+                <i className="fas fa-chart-line text-green-500 text-5xl"></i>
                 <h1 className={`text-4xl sm:text-6xl font-bold ${themeClasses.text}`}>
                   Trade <span className="text-green-500">Smarter</span>
                 </h1>
@@ -79,23 +78,23 @@ const Home = () => {
             Professional Trading Tools
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
+            {[ 
               {
                 icon: 'fas fa-robot',
-                title: 'AI Predictions',
-                description: '93% accurate stock predictions using advanced XGBoost model.',
+                title: 'AI-Powered Predictions',
+                description: 'Leverage AI algorithms like XGBoost for 93% accurate stock predictions. Make data-driven investment decisions.',
                 color: 'green'
               },
               {
                 icon: 'fas fa-chart-candlestick',
-                title: 'Technical Analysis',
-                description: 'Advanced charting tools with real-time market data.',
+                title: 'Advanced Technical Analysis',
+                description: 'Use detailed candlestick charting and real-time data to analyze stock movements and trends.',
                 color: 'blue'
               },
               {
                 icon: 'fas fa-newspaper',
-                title: 'Market News',
-                description: 'Real-time news analysis with sentiment scoring.',
+                title: 'Market News with Sentiment Scoring',
+                description: 'Get real-time news with sentiment analysis to gauge market sentiment and influence your trading strategy.',
                 color: 'purple'
               }
             ].map((feature, index) => (
@@ -103,8 +102,8 @@ const Home = () => {
                 key={index}
                 className={`${themeClasses.cardBg} rounded-xl p-6 backdrop-blur-lg transform transition-all hover:scale-105 shadow-lg hover:shadow-green-500/10`}
               >
-                <div className={`bg-${feature.color}-500/20 w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
-                  <i className={`${feature.icon} text-${feature.color}-500 text-xl`}></i>
+                <div className={`bg-${feature.color}-500/20 w-14 h-14 rounded-lg flex items-center justify-center mb-4`}>
+                  <i className={`${feature.icon} text-${feature.color}-500 text-2xl`}></i>
                 </div>
                 <h3 className={`text-xl font-semibold ${themeClasses.text} mb-2`}>{feature.title}</h3>
                 <p className={themeClasses.secondaryText}>{feature.description}</p>
@@ -113,30 +112,6 @@ const Home = () => {
           </div>
         </div>
       </section>
-
-      {/* Stats Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[
-              { number: '10K+', label: 'Active Users' },
-              { number: '$2M+', label: 'Assets Tracked' },
-              { number: '99.9%', label: 'Uptime' },
-              { number: '24/7', label: 'Support' }
-            ].map((stat, index) => (
-              <div
-                key={index}
-                className="text-center transform transition-all hover:scale-105"
-              >
-                <div className="text-3xl font-bold text-blue-500 mb-2">{stat.number}</div>
-                <div className="text-gray-400">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
 
       {/* Footer */}
       <footer className="bg-gray-800 py-12">
@@ -155,7 +130,6 @@ const Home = () => {
               <h4 className="text-white font-semibold mb-4">Product</h4>
               <ul className="space-y-2">
                 <li><a href="/features" className="text-gray-400 hover:text-white">Features</a></li>
-
               </ul>
             </div>
             <div>
@@ -167,7 +141,6 @@ const Home = () => {
             <div>
               <h4 className="text-white font-semibold mb-4">Connect</h4>
               <div className="flex space-x-4">
-
                 <a href="#" className="text-gray-400 hover:text-white">
                   <i className="fab fa-linkedin"></i>
                 </a>
