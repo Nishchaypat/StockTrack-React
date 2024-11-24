@@ -14,6 +14,7 @@ import About from './pages/About';
 import Navbar from './components/Navbar';
 import { ThemeProvider } from './context/ThemeContext';
 import CompanyPage from './pages/CompanyPage';
+import AboutDatabasePage from './pages/AboutDatabasePage';
 
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/features" element={<Features />} />
             <Route path="/about" element={<About />} />
+            <Route path="/dbinfo" element={<AboutDatabasePage />} />
             <Route path="/company/:ticker" element={<CompanyPage />} />
             <Route element={<Layout />}>
               <Route 

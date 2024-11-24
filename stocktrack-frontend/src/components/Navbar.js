@@ -84,6 +84,9 @@ const Navbar = () => {
               <Link to="/about" className="text-gray-300 hover:text-green-400 transition-colors">
                 About
               </Link>
+              <Link to="/dbinfo" className="text-gray-300 hover:text-green-400 transition-colors">
+                DB Info
+              </Link>
             </div>
           </div>
 
