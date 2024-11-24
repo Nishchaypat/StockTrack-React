@@ -86,7 +86,7 @@ const Home = () => {
                 color: 'green'
               },
               {
-                icon: 'fas fa-chart-candlestick',
+                icon: 'fas fa-chart-line',
                 title: 'Advanced Technical Analysis',
                 description: 'Use detailed candlestick charting and real-time data to analyze stock movements and trends.',
                 color: 'blue'
