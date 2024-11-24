@@ -165,6 +165,47 @@ const Features = () => {
           </div>
         </div>
       </div>
+      <footer className="bg-gray-800 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center mb-4">
+                <i className="fas fa-chart-line text-blue-500 text-2xl mr-2"></i>
+                <span className="text-white text-xl font-bold">StockTrack</span>
+              </div>
+              <p className="text-gray-400">
+                Making stock tracking and portfolio management easier for everyone.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Product</h4>
+              <ul className="space-y-2">
+                <li><a href="/features" className="text-gray-400 hover:text-white">Features</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Company</h4>
+              <ul className="space-y-2">
+                <li><a href="/about" className="text-gray-400 hover:text-white">About</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-4">Connect</h4>
+              <div className="flex space-x-4">
+                <a href="https://www.linkedin.com/in/nishchay-pat/" className="text-gray-400 hover:text-white">
+                  <i className="fab fa-linkedin"></i>
+                </a>
+                <a href="https://github.com/Nishchaypat" className="text-gray-400 hover:text-white">
+                  <i className="fab fa-github"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
+            <p>© 2024 StockTrack. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
