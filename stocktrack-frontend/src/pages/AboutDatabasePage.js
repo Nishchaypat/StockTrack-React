@@ -12,13 +12,13 @@ const AboutDatabasePage = () => {
       {/* Hero Section with Animated Background */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-green-500/20 to-blue-500/20"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-red-500/20"></div>
           {/* Animated Lines */}
           <div className="absolute inset-0 opacity-10">
             {[...Array(5)].map((_, i) => (
               <div
                 key={i}
-                className="absolute h-px bg-green-500"
+                className="absolute h-px bg-blue-500"
                 style={{
                   left: `${i * 25}%`,
                   top: `${50 + Math.sin(i) * 20}%`,
@@ -36,7 +36,7 @@ const AboutDatabasePage = () => {
             <div className="text-center">
               <h1 className={`text-4xl md:text-5xl font-bold ${isDark ? 'text-white' : 'text-black'} mb-6`}>
                 Database
-                <span className="text-green-500"> in StockTrack</span>
+                <span className="text-blue-500"> in StockTrack</span>
               </h1>
               <p className={`text-xl ${isDark ? 'text-gray-300' : 'text-gray-700'} max-w-3xl mx-auto`}>
                 Overview of the database structure for the StockTrack platform, which includes data storage for predictions, user profiles, financial metrics, stock prices, and more.
