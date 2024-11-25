@@ -387,20 +387,25 @@ const CompanyPage = () => {
         )}
 
         {activeTab === 'news' && company.news_articles?.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {company.news_articles.map((article, index) => (
-              <div key={article.title || index} className="bg-gray-800 rounded-xl p-6">
-                <a 
-                  href={article.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="block hover:bg-gray-700 transition-colors rounded-lg"
-                >
-                  <h4 className="text-lg font-semibold text-white hover:text-blue-400">
-                    {article.title}
-                  </h4>
-                  <p className="text-gray-400 mt-2">{article.summary}</p>
-                </a>
+              <div 
+                key={article.title || index} 
+                className="bg-gray-800 rounded-xl p-6"
+              >
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start gap-4">
+                    <h4 className="text-lg font-semibold text-white">
+                      {article.title}
+                    </h4>
+                    <span className="text-sm text-gray-400 whitespace-nowrap">
+                      {new Date(article.published_date).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <p className="text-gray-400 mt-2 text-sm leading-relaxed">
+                    {article.content}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

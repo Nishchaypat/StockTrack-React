@@ -165,7 +165,7 @@ class Command(BaseCommand):
                 news_data = stock_data.news()
                 for article in news_data:
                     NewsArticle.objects.create(
-                        company=company,
+                        company=ticker,
                         title=article['title'],
                         content=article['content'],
                         published_date=article['published_date']

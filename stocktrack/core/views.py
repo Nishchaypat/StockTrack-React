@@ -16,6 +16,7 @@ import mysql.connector
 @csrf_exempt
 @api_view(['POST'])
 def register_user(request):
+    print(f"Register?: {data}")
     data = request.data
     user = User.objects.create_user(
         username=data['email'],  # Using email as the username
@@ -31,6 +32,7 @@ def register_user(request):
 @api_view(['POST'])
 def login_user(request):
     data = request.data
+    print(f"Login?: {data}")
     try:
         # Retrieve the user by email
         user = User.objects.get(email=data['email'])
@@ -79,7 +81,7 @@ def view_dashboard(request, user_id):
 
 @api_view(['GET'])
 def view_portfolio(request, user_id):
-    print(f"Authenticated user portfolio: {request.user}, {request.user.id}, {user_id}")  # Debugging output
+    print(f"Dashboard: {request.user}, {request.user.id}, {user_id}")  # Debugging output
 
     if not request.user.is_authenticated:
         return Response({"error": "User not authenticated"}, status=401)
@@ -106,14 +108,14 @@ def view_portfolio(request, user_id):
 
 @api_view(['POST'])
 def add_to_portfolio(request):
-    print('here')
+    print('here at add to portfolio')
     # Ensure the user is authenticated
     if not request.user.is_authenticated:
         return Response({'message': 'User not authenticated'}, status=401)
 
     # Get the authenticated user ID
     user_id = request.user.id
-    print(user_id)
+    #print(user_id)
     # Ensure the symbol is provided
     symbol = request.data.get('symbol')
     if not symbol:
@@ -122,7 +124,7 @@ def add_to_portfolio(request):
     # Try to get the company based on the symbol
     try:
         company = Company.objects.get(symbol=symbol)
-        print(company)
+        #print(company)
     except Company.DoesNotExist:
         return Response({'message': 'Company not found'}, status=404)
 
@@ -133,8 +135,8 @@ def add_to_portfolio(request):
     # Create a new portfolio entry for the user and company symbol
     Portfolio.objects.create(user=user_id, company_symbol=symbol)
     portfolios = Portfolio.objects.all()
-    for portfolio in portfolios:
-        print(portfolio)
+    #for portfolio in portfolios:
+        #print(portfolio)
     return Response({'message': 'Company added to portfolio'})
 
 
@@ -142,12 +144,13 @@ def add_to_portfolio(request):
 
 @api_view(['DELETE'])
 def remove_from_portfolio(request):
+    print('here at remove from portfolio')
     if not request.user.is_authenticated:
         return Response({"detail": "Authentication credentials were not provided."}, status=401)
 
     user = request.user.id
     symbol = request.data.get('symbol')
-    print(user, symbol)
+    #print(user, symbol)
     
     if not symbol:
         return Response({"detail": "No symbol provided."}, status=400)
@@ -181,7 +184,7 @@ def get_predictions(company_id):
 
     # Create a cursor
     mycursor = conn.cursor()
-    print(mycursor)
+    #print(mycursor)
     try:
         # Query the database to fetch the last 20 predictions for the company
         query = """
@@ -205,7 +208,7 @@ def get_predictions(company_id):
         ]
 
     except mysql.connector.Error as err:
-        print(err)
+        #print(err)
         raise Exception(f"Error fetching predictions: {str(err)}")
 
     finally:
@@ -258,11 +261,12 @@ def company_details(request, ticker):
             }
             for article in news_articles
         ]
-        print(stock_prices_data)
+        #print(stock_prices_data)
 
         # Fetch prediction data using the get_predictions function
         prediction_data = get_predictions(ticker)
-        print(prediction_data)
+        #print(prediction_data)
+        #print(news_articles_data)
         # Prepare the data to return
         company_data = {
             'name': company.name,
@@ -285,7 +289,7 @@ def company_details(request, ticker):
 
 @api_view(['GET'])
 def get_user_profile(request, user_id):
-    print(request)
+    print('here at get_user_profile')
     try:
         user = User.objects.get(id=user_id)
         serializer = UserSerializer(user)
@@ -297,7 +301,7 @@ def get_user_profile(request, user_id):
 
 @api_view(['PUT'])
 def update_user_profile(request, user_id):
-    print(request.data)
+    print('here at update_user_profile')
     try:
         user = User.objects.get(id=user_id)
 
@@ -324,7 +328,7 @@ def update_user_profile(request, user_id):
 @api_view(['DELETE'])
 def delete_user(request, user_id):
     try:
-        print('here')
+        print('here at delete_user')
         user = User.objects.get(id=user_id)
         if user != request.user:
             return Response({"detail": "You do not have permission to delete this user."}, status=403)
@@ -340,15 +344,15 @@ def change_user_password(request):
     curr_pass = request.data['currentPassword']
     try:
         user = User.objects.get(email=request.data['email'])
-        print(f"Found user: {user.email}")
+        print('here at change_user_password')
         if check_password(curr_pass, user.password):
             user.password = make_password(request.data['newPassword'])
-            print("Password updated")
+            #print("Password updated")
             user.save()
-            print("Saved to database")
+            #print("Saved to database")
             return True
         else:
             print("Current password check failed")
     except User.DoesNotExist:
-        print("User not found")
+        #print("User not found")
         return False
