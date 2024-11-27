@@ -1,86 +1,60 @@
-# StockTrack
+# [StockTrack](https://aistockvision.netlify.app/)
 
-StockTrack is an advanced stock tracking platform that empowers investors with AI-powered stock predictions, real-time market insights, and comprehensive financial analysis. Built on cutting-edge machine learning models, real-time data processing, and robust database management, StockTrack is designed to help you trade smarter and manage your stock portfolio with ease. [Link] (https://aistockvision.netlify.app/)
+StockTrack is a stock tracking platform designed to empower investors with AI-powered predictions, real-time market insights, and comprehensive financial analysis. It integrates a custom-built API that links a Django backend (hosted on Render) with a React frontend (hosted on Netlify), ensuring seamless communication between the two technologies.
 
 ## Key Features
 
+### Custom API Integration
+StockTrack is powered by a custom API that connects a Django backend (hosted on Render) with a React frontend (hosted on Netlify). This setup allows for efficient data transfer between the two platforms, ensuring that users get real-time updates and insights.
+
 ### AI-Powered Price Prediction
-StockTrack utilizes a highly accurate XGBoost model trained on historical stock price data and technical indicators. Achieving 93% accuracy, this model provides precise stock price predictions, enabling users to make data-driven investment decisions.
+The platform uses an XGBoost model trained on historical stock price data and technical indicators. The model offers high prediction accuracy, helping users make informed investment decisions.
 
 ### Sentiment Analysis
-StockTrack integrates real-time sentiment analysis of financial news from trusted sources like Bloomberg, CNBC, and the Wall Street Journal. By leveraging natural language processing (NLP), the platform tracks market sentiment and provides actionable insights to guide investment strategies.
+Real-time sentiment analysis of financial news is integrated into the platform, helping users gauge market sentiment and adjust their strategies accordingly.
 
-### Robust Database Management
-Powered by AWS RDS, StockTrack's database architecture ensures efficient data storage and management. The platform provides real-time updates for stock prices, financial metrics, and news articles, offering high availability and scalability to accommodate growing data needs.
+### Database Management
+The database, hosted on AWS RDS, stores key information such as stock prices, financial metrics, and news articles, providing real-time updates and scalability.
 
-### Comprehensive Financial Metrics
-StockTrack offers detailed financial metrics, such as the P/E ratio, RSI, MACD, OBV, and more, integrated with historical stock data. These metrics provide thorough market analysis and predictive insights to aid in well-informed decision-making.
-
-### Personalized Dashboard
-StockTrack provides a customizable dashboard that allows users to track portfolio performance, monitor their favorite stocks, and receive personalized insights. The platform leverages machine learning to suggest optimal trading strategies based on user preferences and real-time market conditions.
-
-### Real-Time Updates
-Stay informed with live stock price updates, real-time market news, and alerts on market-moving events. StockTrack integrates with financial APIs for seamless, real-time data synchronization.
-
-### Advanced Stock Price Prediction Model
-The platform uses a machine learning-based ensemble model, combining technical indicators and XGBoost, to provide highly accurate stock price predictions. 
-
-### Automated Risk Assessment
-StockTrack continuously evaluates market conditions and performs automated risk assessments to guide users in managing potential risks within their portfolios.
+### Real-Time Market Updates
+The platform uses financial APIs to provide live stock price updates, news alerts, and market-moving events, ensuring users stay informed.
 
 ---
 
 ## Project Overview
 
-StockTrack integrates advanced machine learning techniques, real-time stock data, and sentiment analysis to provide investors with accurate predictions and deep insights into the market. Developed as part of a DBMS class project, this platform combines the power of machine learning with robust database management to create a seamless, scalable stock tracking solution.
-
-### What Sets StockTrack Apart?
-- **93% accuracy in stock predictions** powered by an XGBoost machine learning model.
-- **Sentiment analysis from major financial news sources** for actionable insights.
-- **Real-time stock price and market data synchronization** through AWS cloud services.
-  
-StockTrack helps investors make smarter decisions by offering a powerful combination of data, predictions, and personalized insights.
+StockTrack combines machine learning techniques and a robust database to offer real-time stock tracking and price prediction. The system is designed with a custom API that links a Django backend and a React frontend, providing a seamless user experience and scalable architecture.
 
 ---
 
 ## Technical Stack
 
-- **Machine Learning**: XGBoost for stock price prediction, real-time data processing, and feature engineering.
-- **Database Architecture**: AWS RDS for scalable and efficient data management.
-- **Front-End**: React.js for a dynamic and responsive user interface.
+- **Backend**: Django (hosted on Render) with a custom API to handle data requests.
+- **Frontend**: React.js (hosted on Netlify) for a responsive, dynamic user interface.
+- **Machine Learning**: XGBoost for stock price prediction.
+- **Database**: AWS RDS for data storage and management.
 
 ---
 
 ## Key Functionalities
 
 ### Basic Functions
-- User management and profile customization
+- User management
 - Real-time stock price tracking
-- Company financial metrics analysis
-- Advanced search and filtering capabilities
+- Company financial analysis
 - Portfolio management
 
 ### Advanced Features
-- AI-powered stock price predictions
-- News sentiment analysis
+- AI-powered stock predictions
+- Sentiment analysis of news
 - Personalized investment insights
-- Real-time market updates
 - Automated risk assessment
 
 ---
 
-## Database Overview
+## API Integration
 
-StockTrack's database stores essential information, including stock predictions, user profiles, financial metrics, stock prices, and news articles. 
-
-### Key Tables in the Database:
-
-- **Predictions Table**: Stores historical stock price predictions and actual values.
-- **User Table**: Contains user profiles (email, name, password).
-- **Company Table**: Stores information about different companies, including their stock symbol, sector, and industry.
-- **Financial Metrics Table**: Includes key financial metrics such as P/E ratio and EPS for each company.
-- **Stock Price Table**: Stores real-time stock price data for companies.
-- **News Articles Table**: Contains articles related to stocks and financial news.
+The custom API between Django and React ensures that real-time data, including stock prices and financial metrics, are seamlessly transferred and displayed on the React frontend. The backend is responsible for processing predictions and sentiment analysis, while the frontend handles user interactions and visualizations.
 
 ---
 
@@ -89,27 +63,15 @@ StockTrack's database stores essential information, including stock predictions,
 ### XGBoost for Stock Price Prediction
 - **Accuracy**: 93% in predicting stock prices.
 - **Training Data**: Historical OHLCV data, technical indicators, and financial metrics.
-- **Real-time Model Updates**: The model is continuously updated with real-time data for improved predictions.
 
-### Technical Indicators Used:
-- **SMA**: 15-day Simple Moving Average for trend identification.
-- **EMA**: 5-day Exponential Moving Average for short-term momentum.
-- **RSI**: 15-day Relative Strength Index for overbought/oversold conditions.
-- **MACD**: Moving Average Convergence Divergence for trend direction and momentum.
-- **Bollinger Bands**: Volatility measurement with a 56-day window and 2 standard deviations.
-- **ADX**: Average Directional Index for trend strength.
-- **Aroon**: For identifying trend strength and direction.
-
-### Hyperparameter Tuning:
-- **Search Space**: Includes n_estimators, max_depth, learning_rate, subsample, colsample_bytree, and more.
-- **Optimization**: RandomizedSearchCV for hyperparameter optimization.
-- **Evaluation**: Model performance is evaluated using R² scoring, MSE, and RMSE.
+### Technical Indicators:
+- SMA, EMA, RSI, MACD, Bollinger Bands, ADX, Aroon
 
 ---
 
 ## Conclusion
 
-StockTrack combines powerful AI, real-time data, and comprehensive financial metrics to provide users with the tools they need to make smarter investment decisions. With its user-friendly interface, personalized insights, and cutting-edge machine learning models, StockTrack is a comprehensive solution for anyone looking to track stocks and manage their portfolio efficiently.
+StockTrack is a powerful platform for tracking stocks and making data-driven investment decisions. With a custom-built API linking Django and React, the platform offers real-time updates, AI-powered predictions, and a seamless user experience.
 
 ---
 
