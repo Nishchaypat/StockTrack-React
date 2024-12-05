@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar.js';
 import { CanvasJSChart } from 'canvasjs-react-charts';
-import { AlertCircle, TrendingUp, DollarSign, Newspaper, Download, ChartLine } from 'lucide-react';
+import { AlertCircle, TrendingUp, DollarSign, Newspaper, Download } from 'lucide-react';
 
 const CompanyPage = () => {
   const { isDark } = useTheme();
