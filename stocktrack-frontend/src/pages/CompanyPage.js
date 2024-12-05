@@ -217,7 +217,7 @@ const CompanyPage = () => {
         { id: 'overview', label: 'Overview', icon: TrendingUp },
         { id: 'financials', label: 'Financials', icon: DollarSign },
         { id: 'news', label: 'News', icon: Newspaper },
-        { id: 'economic_indicators', label: 'Economic Indicator', icon: ChartLine }
+        { id: 'economic_indicators', label: 'Economic Indicator', icon: AlertCircle }
       ].map(({ id, label, icon: Icon }) => (
         <button
           key={id}
