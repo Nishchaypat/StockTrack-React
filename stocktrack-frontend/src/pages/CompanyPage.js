@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar.js';
 import { CanvasJSChart } from 'canvasjs-react-charts';
-import { AlertCircle, TrendingUp, DollarSign, Newspaper, Download } from 'lucide-react';
+import { AlertCircle, TrendingUp, DollarSign, Newspaper, Download, ChartLine } from 'lucide-react';
 
 const CompanyPage = () => {
   const { isDark } = useTheme();
@@ -217,6 +217,7 @@ const CompanyPage = () => {
         { id: 'overview', label: 'Overview', icon: TrendingUp },
         { id: 'financials', label: 'Financials', icon: DollarSign },
         { id: 'news', label: 'News', icon: Newspaper },
+        { id: 'economic_indicators', label: 'Economic Indicator', icon: ChartLine }
       ].map(({ id, label, icon: Icon }) => (
         <button
           key={id}
@@ -309,9 +310,22 @@ const CompanyPage = () => {
 
         {renderTabs()}
 
+
         {activeTab === 'overview' && (
           <>
             {renderStockChart()}
+            {/* Display Average Predictions */}
+            {company.average_predictions && (
+              <div className="bg-gray-800 rounded-xl p-6 mb-6">
+                <h3 className="text-xl font-semibold text-white mb-4">Average Predictions</h3>
+                <div className="text-white space-y-2">
+                  <p><span className="font-semibold">Average Actual:</span> {formatNumber(company.average_predictions.avg_actual)}</p>
+                  <p><span className="font-semibold">Average Predicted:</span> {formatNumber(company.average_predictions.avg_predicted)}</p>
+                  <p><span className="font-semibold">Days Count:</span> {company.average_predictions.prediction_count}</p>
+                </div>
+              </div>
+            )}
+
             {company.stock_prices?.length > 0 && (
               <div className="bg-gray-800 rounded-xl p-6">
                 <h3 className="text-xl font-semibold text-white mb-4">Recent Stock Prices</h3>
@@ -353,6 +367,7 @@ const CompanyPage = () => {
             )}
           </>
         )}
+
 
         {activeTab === 'financials' && company.financial_metrics?.length > 0 && (
           <div className="bg-gray-800 rounded-xl p-6">
@@ -410,6 +425,39 @@ const CompanyPage = () => {
             ))}
           </div>
         )}
+
+        {activeTab === 'economic_indicators' && (
+          <>
+            {company.economic_indicators?.length > 0 && (
+              <div className="bg-gray-800 rounded-xl p-6">
+                <h3 className="text-xl font-semibold text-white mb-4">Recent U.S Economic Indicators</h3>
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-700">
+                    <thead>
+                      <tr>
+                        <th className="px-4 py-3 text-left text-gray-400">Date</th>
+                        <th className="px-4 py-3 text-right text-gray-400">GDP</th>
+                        <th className="px-4 py-3 text-right text-gray-400">Inflation Rate</th>
+                        <th className="px-4 py-3 text-right text-gray-400">Interest Rate</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-700">
+                      {company.economic_indicators.slice(0, 5).map((indicator, index) => (
+                        <tr key={indicator.date || index}>
+                          <td className="px-4 py-3 text-white">{indicator.date}</td>
+                          <td className="px-4 py-3 text-right text-white">${indicator.gdp.toFixed(2)}trillion</td>
+                          <td className="px-4 py-3 text-right text-white">{indicator.inflation_rate.toFixed(2)}%</td>
+                          <td className="px-4 py-3 text-right text-white">{indicator.interest_rate.toFixed(2)}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </>
+        )}
+
       </div>
     );
   };

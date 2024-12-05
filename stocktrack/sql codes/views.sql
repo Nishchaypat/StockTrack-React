@@ -9,7 +9,7 @@ FROM auth_user
 WHERE email = '{email}';
 
 
--- Fetch user's portfolio along with company details and latest stock price
+-- Fetch user's dashboard along with company details and latest stock price
 SELECT p.user_id, c.name AS company_name, c.symbol, 
        sp.date AS latest_date, sp.close AS latest_close_price, 
        SUM(p.quantity * sp.close) AS total_stock_value
@@ -31,14 +31,6 @@ FROM core_portfolio
 WHERE user_id = {user_id} 
 AND company_symbol = '{symbol}';
 
--- Add company to portfolio if not already present
-INSERT INTO core_portfolio (user_id, company_symbol) 
-SELECT {user_id}, '{symbol}'
-WHERE NOT EXISTS (
-    SELECT 1 
-    FROM core_portfolio 
-    WHERE user_id = {user_id} AND company_symbol = '{symbol}'
-);
 
 
 -- Remove company from portfolio
@@ -66,7 +58,7 @@ GROUP BY symbol;
 
 
 
--- Fetch company details, latest stock price, financial metrics, and news
+-- Fetch company details, latest stock price, financial metrics, and news                         # Complex JOIN function
 SELECT c.name, c.symbol, 
        sp.date AS latest_date, sp.close AS latest_close_price,
        fm.revenue, fm.earnings, fm.pe_ratio, fm.market_cap, 
@@ -80,20 +72,10 @@ ORDER BY sp.date DESC, na.published_date DESC;
 
 
 
--- Calculate the average closing price for a company over the last 30 days
-SELECT company_id, AVG(close) AS avg_close_price 
-FROM core_stockprice 
-WHERE company_id = {company_id}
-AND date >= CURDATE() - INTERVAL 30 DAY
-GROUP BY company_id;
-
-
-
 -- Fetch user profile details
 SELECT id, username, first_name, last_name, email, date_joined
 FROM auth_user 
 WHERE id = {user_id};
-
 
 
 -- Update user profile information

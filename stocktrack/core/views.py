@@ -5,7 +5,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import User, Company, Portfolio, StockPrice, NewsArticle, FinancialMetric
+from .models import User, Company, Portfolio, StockPrice, NewsArticle, FinancialMetric, EconomicIndicator
 from .serializer import PortfolioSerializer, UserSerializer, CompanySerializer, ChangePasswordSerializer
 import json
 from django.contrib.auth.models import User
@@ -16,8 +16,8 @@ import mysql.connector
 @csrf_exempt
 @api_view(['POST'])
 def register_user(request):
-    print(f"Register?: {data}")
     data = request.data
+    print(f"Register?: {data}")
     user = User.objects.create_user(
         username=data['email'],  # Using email as the username
         first_name=data['firstname'],
@@ -172,6 +172,53 @@ def company_list(request):
     companies = Company.objects.all().values('name', 'symbol')
     return JsonResponse({'companies': list(companies)})
 
+def get_average_predictions(company_id):
+    import mysql.connector
+
+    # Connect to MySQL database on AWS
+    conn = mysql.connector.connect(
+        host="database-1.cds0coo26frf.us-east-1.rds.amazonaws.com",
+        user="adminstocktrack",
+        password="Nrp212300",
+        port=3306,
+        database="stocktrack"
+    )
+
+    # Create a cursor
+    mycursor = conn.cursor()
+
+    try:
+        # Query the database to fetch average predictions for the last 30 days
+        query = """
+        SELECT 
+               AVG(actual) AS avg_actual, 
+               AVG(predicted) AS avg_predicted, 
+               COUNT(*) AS prediction_count 
+        FROM Prediction 
+        WHERE symbol = %s 
+        AND date >= CURDATE() - INTERVAL 20 DAY
+        GROUP BY symbol;
+        """
+        mycursor.execute(query, (company_id,))
+        result = mycursor.fetchone()
+
+        # Return the result in a dictionary format
+        if result:
+            return {
+                'avg_actual': result[0],
+                'avg_predicted': result[1],
+                'prediction_count': result[2]
+            }
+        else:
+            return None
+
+    except mysql.connector.Error as err:
+        raise Exception(f"Error fetching average predictions: {str(err)}")
+
+    finally:
+        mycursor.close()
+        conn.close()
+
 def get_predictions(company_id):
     # Connect to MySQL database on AWS
     conn = mysql.connector.connect(
@@ -217,6 +264,7 @@ def get_predictions(company_id):
 
 @api_view(['GET'])
 def company_details(request, ticker):
+    print('Here at company:', ticker)
     try:
         # Fetch company details using the ticker
         company = Company.objects.get(symbol=ticker)
@@ -262,9 +310,21 @@ def company_details(request, ticker):
             for article in news_articles
         ]
         #print(stock_prices_data)
+        eco_indicators = EconomicIndicator.objects.order_by('-date')[:5]
 
+        # Format the economic indicator data
+        economic_indicators_data = [
+            {
+                'date': indicator.date.strftime('%Y-%m-%d'),
+                'gdp': round(indicator.gdp, 2),
+                'inflation_rate': round(indicator.inflation_rate, 2),
+                'interest_rate': round(indicator.interest_rate, 2)
+            }
+            for indicator in eco_indicators
+        ]
         # Fetch prediction data using the get_predictions function
         prediction_data = get_predictions(ticker)
+        avg_predictions = get_average_predictions(ticker)
         #print(prediction_data)
         #print(news_articles_data)
         # Prepare the data to return
@@ -277,7 +337,9 @@ def company_details(request, ticker):
             'stock_prices': stock_prices_data,
             'financial_metrics': financial_metrics_data,
             'news_articles': news_articles_data,
-            'predictions': prediction_data  # Include predictions here
+            'predictions': prediction_data,  # Include predictions here
+            'average_predictions': avg_predictions,
+            'economic_indicators': economic_indicators_data
         }
         return JsonResponse(company_data)
 
