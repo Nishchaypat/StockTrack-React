@@ -79,6 +79,11 @@ StockTrack is a powerful platform for tracking stocks and making data-driven inv
 
 [LinkedIn](https://www.linkedin.com/in/nishchay-pat/)
 
+
+---
+
+**Note: Rated as best class project in Fall 2024**
+
 ---
 
 ## Project Report
