@@ -18,11 +18,11 @@ const CompanyPage = () => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   const chartRef = useRef(null);
 
-  const apiUrl = process.env.REACT_APP_API_URL || (
-    window.location.origin.includes('localhost') 
-      ? 'http://localhost:8000' 
-      : 'https://stocktrack-react.onrender.com'
-  );
+  const apiUrl = process.env.REACT_APP_API_URL 
+        ? process.env.REACT_APP_API_URL 
+        : (window.location.origin.includes('localhost') 
+            ? 'http://localhost:8000' 
+            : 'https://stocktrack-react.onrender.com');
 
   const fetchCompanyData = useCallback(async () => {
     if (!ticker) return null;
