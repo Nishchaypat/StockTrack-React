@@ -88,4 +88,4 @@ StockTrack is a powerful platform for tracking stocks and making data-driven inv
 
 ## Project Report
 
-[Doc](https://docs.google.com/document/d/16orTvhJAhCxQVHALzxS6dUeI4KTd4bzVy5pj-ICQ-go/edit?usp=sharing)
+[Doc](https://docs.google.com/document/d/16orTvhJAhCxQVHALzxS6dUeI4KTd4bzVy5pj-ICQ-go/edit?usp=sharing) 
