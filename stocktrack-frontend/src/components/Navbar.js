@@ -21,7 +21,6 @@ const Navbar = () => {
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const navigate = useNavigate();
 
-  // Filter companies based on search query
   useEffect(() => {
     if (searchQuery.length >= 1) {
       const filtered = companies.filter(company =>
