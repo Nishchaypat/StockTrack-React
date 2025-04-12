@@ -164,7 +164,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden space-y-4 py-6">
             <Link to="/features" className="block text-gray-300 hover:text-green-400 transition-colors">
