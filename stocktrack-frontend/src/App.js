@@ -17,7 +17,6 @@ import CompanyPage from './pages/CompanyPage';
 import AboutDatabasePage from './pages/AboutDatabasePage';
 import AboutMLPage from './pages/AboutMLPage';
 
-
 function App() {
   return (
     <ThemeProvider>
