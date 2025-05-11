@@ -1,6 +1,5 @@
 __pycache__/
 
-# Ignore all node_modules directories
 node_modules/
 
 /stocktrack-frontend/package-lock.json/
